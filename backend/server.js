@@ -19,6 +19,10 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get('/', (req, res) => {
+    res.send('API WORKING');
+})
+
 // Static files - make sure uploads directory exists
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
