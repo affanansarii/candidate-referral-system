@@ -11,7 +11,11 @@ const app = express();
 
 // Middleware - CORS first
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://candidate-referral-system-gamma.vercel.app'], // Vite default port
+    origin: [
+        "http://localhost:5173",
+        "https://candidate-referral-system-gamma.vercel.app",
+        "https://candidate-referral-system-mveg.vercel.app"  // <-- add this
+    ],
     credentials: true
 }));
 
