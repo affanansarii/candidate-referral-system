@@ -1,6 +1,21 @@
 import axios from 'axios'
 
-const API_BASE_URL = 'https://candidate-referral-system-gamma.vercel.app/api'
+// Determine API base URL based on environment
+const getApiBaseUrl = () => {
+    // If we're in development, use localhost
+    if (import.meta.env.DEV) {
+        return 'https://candidate-referral-system-gamma.vercel.app/api'
+    }
+
+    // If we're in production, use the same domain (if backend is deployed with frontend)
+    // Or use your backend deployment URL
+    return 'https://candidate-referral-system-gamma.vercel.app/api'
+}
+
+const API_BASE_URL = getApiBaseUrl()
+
+// For now, let's use a relative path since your backend might be at the same domain
+// const API_BASE_URL = '/api'
 
 const api = axios.create({
     baseURL: API_BASE_URL,
@@ -20,11 +35,14 @@ api.interceptors.request.use(
     }
 )
 
-// Response interceptor for better error handling
+// Response interceptor for auth errors
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        console.error('API Error:', error.response?.data || error.message)
+        if (error.response?.status === 401) {
+            localStorage.removeItem('token')
+            window.location.href = '/login'
+        }
         return Promise.reject(error)
     }
 )
@@ -41,7 +59,6 @@ export const candidateAPI = {
     create: (candidateData) => {
         const formData = new FormData()
 
-        // Append all fields to FormData
         Object.keys(candidateData).forEach(key => {
             if (candidateData[key] !== null && candidateData[key] !== undefined) {
                 formData.append(key, candidateData[key])
@@ -70,7 +87,9 @@ export const candidateAPI = {
 
 export const authAPI = {
     login: (credentials) => api.post('/auth/login', credentials),
-    register: (userData) => api.post('/auth/register', userData)
+    register: (userData) => api.post('/auth/register', userData),
+    getMe: () => api.get('/auth/me'),
+    logout: () => api.post('/auth/logout')
 }
 
 export default api

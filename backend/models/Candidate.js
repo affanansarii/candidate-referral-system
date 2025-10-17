@@ -34,13 +34,16 @@ const candidateSchema = new mongoose.Schema({
     referredBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: false // Optional for now
+        required: true
     }
 }, {
     timestamps: true
 });
 
-// Index for search functionality
-candidateSchema.index({ name: 'text', jobTitle: 'text', status: 'text' });
+// Index for user-specific queries
+candidateSchema.index({ referredBy: 1, name: 'text', jobTitle: 'text', status: 'text' });
+
+// Compound index for user-specific email uniqueness
+candidateSchema.index({ email: 1, referredBy: 1 }, { unique: true });
 
 module.exports = mongoose.model('Candidate', candidateSchema);
