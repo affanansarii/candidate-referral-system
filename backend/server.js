@@ -40,7 +40,7 @@ app.use((error, req, res, next) => {
 });
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://affanansarii:affanansarii7860@cluster0.xcw2ywx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/referral-system', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
